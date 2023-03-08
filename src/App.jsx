@@ -1,34 +1,47 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+import logo from '/logo.svg'
+import { Button, Col, Row, Space } from 'antd'
+import { Searcher } from './components/Searcher'
+import { PokemonList } from './components/PokemonList'
+import { getPokemon } from './api/getPokemon'
+import { useEffect} from 'react'
+import { connect } from 'react-redux'
+import { setPokemons as setPokemonsActions } from './actions'
+function App({pokemons, setPokemons}) {
 
+  useEffect(()=>{
+   getPokemon().then(pokemonRes =>
+    setPokemons(pokemonRes)
+    )
+  },[])
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
+  <>
+  <Space direction='vertical' size="large" style={{ display: 'flex'}}>
+  <Row>
+    <Col span={8} offset={8}>
+      <img src={logo} />
+    </Col>
+  </Row>
+  <Row>
+  <Col span={8} offset={8}>
+    <Searcher/>  
+  </Col>
+  </Row>
+  <Row>
+    <Col span={8} offset={5}>
+    <PokemonList pokemons={pokemons}/>
+    </Col>
+  </Row>
+  </Space>
+  </>
+    )
 }
+const mapStateToProps = (state) => ({
+  pokemons: state.pokemons,
+});
 
-export default App
+const mapDispatchToProps = (dispatch) => ({
+  setPokemons: (value) => dispatch(setPokemonsActions(value)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
