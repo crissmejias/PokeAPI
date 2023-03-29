@@ -1,11 +1,20 @@
-import {PokemonCard} from './PokemonCard';
-const PokemonList = ({pokemons}) => {
-    return(<div style={{display:"grid", gridTemplateColumns: "repeat(4, 1fr)", gap:"2rem", placeItems: "center"}}>
-        {pokemons.results?.map(
-            pokemon => 
-            <PokemonCard title={pokemon.name} key={pokemon.name}/>
-        )}
-    </div>)
-}
+import { PokemonCard } from "./PokemonCard";
+const PokemonList = ({ pokemons }) => {
+  return (
+    <>
+      {pokemons &&
+        pokemons.map((pokemon) => (
+          <PokemonCard
+            title={pokemon.name}
+            image={pokemon.sprites.front_shiny}
+            key={pokemon.name}
+            type={`${pokemon.types[0].type.name} ${
+              pokemon.types[1]?.type.name ?? ""
+            }`}
+          />
+        ))}
+    </>
+  );
+};
 
-export {PokemonList}
+export { PokemonList };
