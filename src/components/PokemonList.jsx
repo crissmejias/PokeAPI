@@ -5,12 +5,11 @@ const PokemonList = ({ pokemons }) => {
       {pokemons &&
         pokemons.map((pokemon) => (
           <PokemonCard
+            id={pokemon.id}
             title={pokemon.name}
-            image={pokemon.sprites.front_shiny}
+            image={pokemon.sprites?.front_shiny ?? pokemon.image}
             key={pokemon.name}
-            type={`${pokemon.types[0].type.name} ${
-              pokemon.types[1]?.type.name ?? ""
-            }`}
+            type={pokemon.types}
           />
         ))}
     </>

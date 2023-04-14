@@ -1,21 +1,23 @@
 import logo from "/logo.svg";
-import { Button, Col, Row, Space } from "antd";
+import { Col, Row, Space, Spin } from "antd";
 import { Searcher } from "./components/Searcher";
 import { PokemonList } from "./components/PokemonList";
-import { getPokemon, getPokemonDetailed } from "./api/getPokemon";
+import { getPokemon } from "./api/getPokemon";
 import { useEffect } from "react";
-import { setPokemons } from "./actions";
+import { getPokemonsWithDetails, setLoading } from "./actions";
 import { useDispatch, useSelector } from "react-redux";
+import { get } from "immutable";
+
 function App() {
-  const pokemons = useSelector((state) => state.pokemons);
+  const pokemons = useSelector((state) => get(state, "pokemons")).toJS();
+  const loading = useSelector((state) => state.get("loading"));
   const dispatch = useDispatch();
   useEffect(() => {
     const fetchPokemon = async () => {
+      dispatch(setLoading(true));
       const pokemonRes = await getPokemon();
-      const pokemonDetailed = await Promise.all(
-        pokemonRes.results.map((pokemon) => getPokemonDetailed(pokemon))
-      );
-      dispatch(setPokemons(pokemonDetailed));
+      dispatch(getPokemonsWithDetails(pokemonRes));
+      dispatch(setLoading(false));
     };
     fetchPokemon();
   }, []);
@@ -33,7 +35,15 @@ function App() {
           </Col>
         </Row>
         <Row wrap={true} gutter={[48, 48]} justify={"center"}>
-          <PokemonList pokemons={pokemons} />
+          {loading ? (
+            <Spin
+              size="large"
+              tip="Loading..."
+              style={{ marginTop: "4rem", color: "purple" }}
+            />
+          ) : (
+            <PokemonList pokemons={pokemons} />
+          )}
         </Row>
       </Space>
     </>
