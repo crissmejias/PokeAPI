@@ -2,15 +2,15 @@ import { Card } from "antd";
 import Meta from "antd/es/card/Meta";
 import { StarFilled, StarOutlined } from "@ant-design/icons";
 import { useSelector, useDispatch } from "react-redux";
-import { setFavorites } from "../actions";
 import { useEffect, useState } from "react";
 import { StarButton } from "./StarButton";
+import { setFavorite } from "../slices/dataSlice";
 const PokemonCard = ({ id, title, image, type }) => {
   const dispatch = useDispatch();
   const [isFavorite, setIsFavorite] = useState(false);
-  const typesString = type?.map((element) => element.type.name).join(", ");
+  const typesString = type.map((element) => element.type.name).join(", ");
   const clickHandler = () => {
-    dispatch(setFavorites({ pokemonId: id }));
+    dispatch(setFavorite({ pokemonId: id }));
     setIsFavorite(true);
     alert(`Se ha agregado a ${title} a favoritos`);
   };

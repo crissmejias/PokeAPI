@@ -4,22 +4,18 @@ import { Searcher } from "./components/Searcher";
 import { PokemonList } from "./components/PokemonList";
 import { getPokemon } from "./api/getPokemon";
 import { useEffect } from "react";
-import { getPokemonsWithDetails, setLoading } from "./actions";
-import { useDispatch, useSelector } from "react-redux";
-import { get } from "immutable";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { fetchPokemonWithDetails } from "./slices/dataSlice";
 
 function App() {
-  const pokemons = useSelector((state) => get(state, "pokemons")).toJS();
-  const loading = useSelector((state) => state.get("loading"));
+  const pokemons = useSelector(
+    (state) => state.data.filteredPokemons,
+    shallowEqual
+  );
+  const loading = useSelector((state) => state.ui.loading);
   const dispatch = useDispatch();
   useEffect(() => {
-    const fetchPokemon = async () => {
-      dispatch(setLoading(true));
-      const pokemonRes = await getPokemon();
-      dispatch(getPokemonsWithDetails(pokemonRes));
-      dispatch(setLoading(false));
-    };
-    fetchPokemon();
+    dispatch(fetchPokemonWithDetails());
   }, []);
   return (
     <>
